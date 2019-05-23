@@ -1,0 +1,143 @@
+type User {
+    id: ID! @unique @id
+    email: String! @unique
+    password: String!
+    name: String
+    city: String
+    location: String
+    address: String
+    phone: String
+    journal: Journal @relation(name: "UserJournal")
+    birthday: String
+    ktp: String
+    ktpImage: Image @relation(name: "KtpImage")
+    gender: String
+    image: Image @relation(name: "UserImage")
+    auctions: [Auction] @relation(name: "UserAuction")
+    bids: [Bid] @relation(name: "UserBid")
+    comments: [Comment] @relation(name: "UserComments")
+    birdOwned: [Bird] @relation(name: "BirdOwned")
+    birdParent: [BirdParent] @relation(name: "BirdParent")
+    updatedAt: DateTime! @updatedAt
+    createdAt: DateTime! @createdAt
+}
+
+type Journal {
+    id: ID! @unique @id
+    transaction: Transaction
+    balance: String
+    timeStamp: String
+    updatedAt: DateTime! @updatedAt
+    createdAt: DateTime! @createdAt
+}
+
+type Transaction {
+    id: ID! @unique @id
+    type: String  
+    decription: String
+    amount: String
+    timeStamp: String
+    updatedAt: DateTime! @updatedAt
+    createdAt: DateTime! @createdAt
+}
+
+type Bird {
+    id: ID! @unique @id
+    name: String
+    ring: String! @unique
+    owner: User! @relation(name: "Owner")
+    breeder: String!
+    species: String!
+    type: String!
+    gender: String!
+    age: String!
+    image: [Image] @relation(name: "BirdImage")
+    parent: BirdParent @relation(name: "ParentData")
+    dna: Image @relation(name: "DnaImage")
+    updatedAt: DateTime! @updatedAt
+    createdAt: DateTime! @createdAt
+}
+
+type BirdParent {
+    id: ID! @unique @id
+    noParent: String!
+    breedingRecord: [BreedingRecord] @relation(name: "BreedingRecord")
+    male: Bird! @relation(name: "BirdParentMale")
+    female: Bird! @relation(name: "BirdParentFemale")
+    updatedAt: DateTime! @updatedAt
+    createdAt: DateTime! @createdAt
+}
+
+type BreedingRecord {
+    id: ID! @unique @id
+    name: String
+    status: String
+    parent: BirdParent @relation(name: "BreedingParent")
+    log: [BreedingLog] @relation(name: "BreedingLog")
+    updatedAt: DateTime! @updatedAt
+    createdAt: DateTime! @createdAt
+}
+
+type BreedingLog {
+    id: ID! @unique @id
+    type: String
+    born: String
+    dead: String
+    timeStamp: String!
+    description: String!
+    updatedAt: DateTime! @updatedAt
+    createdAt: DateTime! @createdAt
+}
+
+type Image {
+    id: ID! @unique @id
+    src: String!
+    description: String!
+    updatedAt: DateTime! @updatedAt
+    createdAt: DateTime! @createdAt
+}
+
+type Auction {
+    id: ID! @unique @id
+    bird: Bird!
+    seller: User! @relation(name: "Seller")
+    openPrice: String!
+    closePrice: String!
+    incrementAmount: String!
+    startTime: String!
+    closeTime: String!
+    bids: [Bid] @relation(name: "BidHistory")
+    lastBid: Bid @relation(name: "HighestBid")
+    comments: [Comment] @relation(name: "AuctionComments")
+    isClosed: Boolean! @default(value: false)
+    updatedAt: DateTime! @updatedAt
+    createdAt: DateTime! @createdAt
+}
+
+type Bid {
+    id: ID! @unique @id
+    auction: Auction! @relation(name: "AuctionBidRef")
+    bidder: User! @relation(name: "Bidder")
+    amountBid: String!
+    timeStamp: String!
+    updatedAt: DateTime! @updatedAt
+    createdAt: DateTime! @createdAt
+}
+
+type Comment {
+    id: ID! @unique @id
+    user: User! @relation(name: "UserComment")
+    auction: Auction! @relation(name: "AuctionCommentRef")
+    message: String!
+    timeStamp: String!
+    updatedAt: DateTime! @updatedAt
+    createdAt: DateTime! @createdAt
+}
+
+type AuthPayload {
+    id: ID! @id
+    token: String 
+    user: User
+    updatedAt: DateTime! @updatedAt
+    createdAt: DateTime! @createdAt
+}

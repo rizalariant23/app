@@ -1,0 +1,167 @@
+type Query {
+    user: User!
+    getUserIdQuery: String!
+    auction(filter: String): Auction!
+    auctions: [Auction!]!
+    auctionFilter(filter: String): [Auction!]!
+    birds: [Bird!]!
+    birdFilterById(filter: String): Bird!
+    birdParentById(filter: String): BirdParent!
+    breedingRecordById(filter: String): BreedingRecord!
+}
+
+type Mutation {
+    signup(email: String!, password: String!, name: String!): AuthPayload
+    login(email: String!, password: String!): AuthPayload
+    createAuction(birdId: String!, openPrice: String!, closePrice: String!, incrementAmount: String!, startTime: String!, closeTime: String! ): Auction
+    createBird(name: String!, type: String!, ring: String!, breeder: String!, species: String!, gender: String!, age: String!): Bird
+    createBreedingRecord(name: String!, status: String!): BreedingRecord
+    createBreedingLog(type: String!, timeStamp: String!, description: String!): BreedingLog
+    createBreedingLogHatch(type: String!, born: String!, dead: String!, timeStamp: String!, description: String!): BreedingLog
+    createBirdWithParent(name: String!, type: String!, ring: String!, breeder: String!, species: String!, gender: String!, age: String!, parentId: String!): Bird
+    createBid(auctionId: String!,amountBid: String!,timeStamp: String!): Bid
+    createComment(auctionId: String!,message: String!,timeStamp: String!): Comment
+    createImage(src: String!, description: String!): Image
+    createBirdParent(noParent: String!, birdMaleId: String!, birdFemaleId: String!): BirdParent
+    updateAuctionCloseStatus(auctionId: String!, status: Boolean!): Auction
+    updateBirdParentRelation(birdParentId: String!): User
+    updateUser(address: String!, city: String!, location: String!, birthday: String!, ktp: String!, gender: String!, phone: String!): User
+    updateUserImage(image: String!): User
+    updateUserImageKtp(image: String!): User
+    updateBreedingRecordStatus(status: String!, breedingRecordId: String!): BreedingRecord
+    updateBirdParentBreedingRecordRelation(birdParent: String!, breedingRecord: String!): BirdParent
+    updateBreedingRecordLogRelation(breedingRecord: String!, log: String!): BreedingRecord
+    updateBirdRelation(birdId: String!): User
+    updateBirdImage(birdId: String!, image: String!): Bird
+    updateBirdInformation(name: String!, type: String!, birdId: String!, parentId: String!, species: String!, age: String!, breeder: String!): Bird
+    updateBidRelation(auctionId: String!, bidId: String!): String
+    updateUserAuction(auctionId: String!): User
+    updateCommentRelation(auctionId: String!, commentId: String!): String
+    updateBirdDna(birdId: String!, image: String!): Bird
+}
+
+type Subscription {
+    newAuction: Auction
+    newBid: Bid
+    onAuctionUpdate: Auction
+}
+
+type User {
+    id: ID!
+    email: String!
+    password: String!
+    name: String
+    city: String
+    location: String
+    address: String
+    phone: String
+    journal: Journal
+    birthday: String
+    ktp: String
+    ktpImage: Image
+    gender: String
+    image: Image
+    auctions: [Auction]
+    bids: [Bid]
+    comments: [Comment]
+    birdOwned: [Bird]
+    birdParent: [BirdParent]
+}
+
+type Journal {
+    id: ID!
+    transaction: Transaction
+    balance: String
+    timeStamp: String
+}
+
+type Transaction {
+    id: ID!
+    type: String  
+    decription: String
+    amount: String
+    timeStamp: String
+}
+
+type Bird {
+    id: ID!
+    name: String
+    ring: String!
+    owner: User!
+    breeder: String!
+    species: String!
+    type: String!
+    gender: String!
+    age: String!
+    image: [Image]
+    parent: BirdParent
+    dna: Image
+}
+
+type BirdParent {
+    id: ID!
+    noParent: String!
+    breedingRecord: [BreedingRecord]
+    male: Bird!
+    female: Bird!
+}
+
+type BreedingRecord {
+    id: ID!
+    name: String
+    status: String
+    parent: BirdParent
+    log: [BreedingLog]
+}
+
+type BreedingLog {
+    id: ID!
+    type: String
+    born: String
+    dead: String
+    timeStamp: String!
+    description: String!
+}
+
+type Image {
+    id: ID!
+    src: String!
+    description: String!
+}
+
+type Auction {
+    id: ID!
+    bird: Bird!
+    seller: User!
+    openPrice: String!
+    closePrice: String!
+    incrementAmount: String!
+    startTime: String!
+    closeTime: String!
+    bids: [Bid] 
+    lastBid: Bid
+    comments: [Comment]
+    isClosed: Boolean!
+}
+
+type Bid {
+    id: ID!
+    auction: Auction!
+    bidder: User!
+    amountBid: String!
+    timeStamp: String!
+}
+
+type Comment {
+    id: ID!
+    user: User!
+    auction: Auction!
+    message: String!
+    timeStamp: String!
+}
+
+type AuthPayload {
+    id: ID!
+    token: String
+    user: User
+}
